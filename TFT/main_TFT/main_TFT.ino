@@ -104,23 +104,33 @@ class DetailsScreen {
     if (!normal) {
       txtColor = TFT_BLUE;
     }
-    tft.setCursor(y, x, 2);
-    tft.drawLine(y, x, MAX_WIDTH, x, TFT_BLACK);
+    tft.setCursor(y, x, 1);
     tft.setTextColor(TFT_BLACK);
     tft.println(label);
     tft.setTextColor(txtColor);
-    tft.setCursor(MAX_WIDTH / 2, x, 2);
+    tft.setCursor(MAX_WIDTH / 2, x, 1);
     tft.println(value);
   }
   void printDetailScreen() {
+    int line_spacing = 20;
+    int offset = -2;
     tft.fillScreen(BACKGROUND_COLOR);
+    printNewLine(0, 0, "IP Address", WiFi.localIP().toString().c_str(), true);
+    tft.drawLine(0, line_spacing+offset, MAX_WIDTH, line_spacing+offset, TFT_BLACK);
     printNewLine(20, 0, "Name", _service->_name, true);
+    tft.drawLine(0, 2*line_spacing+offset, MAX_WIDTH, 2*line_spacing+offset, TFT_BLACK);
     printNewLine(40, 0, "ID", _service->_id, true);
+    tft.drawLine(0, 3*line_spacing+offset, MAX_WIDTH, 3*line_spacing+offset, TFT_BLACK);
     printNewLine(60, 0, "URL",  _service->_url, true);
+    tft.drawLine(0, 4*line_spacing+offset, MAX_WIDTH, 4*line_spacing+offset, TFT_BLACK);
     printNewLine(80, 0, "ReqPerMin", String(int(_service->_req_per_minute)).c_str(), true);
+    tft.drawLine(0, 5*line_spacing+offset, MAX_WIDTH, 5*line_spacing+offset, TFT_BLACK);
     printNewLine(100, 0, "200s", String(int(_service->_success)).c_str(), true);
+    tft.drawLine(0, 6*line_spacing+offset, MAX_WIDTH, 6*line_spacing+offset, TFT_BLACK);
     printNewLine(120, 0, "400s", String(int(_service->_userFail)).c_str(), _service->_userFail == 0);
+    tft.drawLine(0, 7*line_spacing+offset, MAX_WIDTH, 7*line_spacing+offset, TFT_BLACK);
     printNewLine(140, 0, "500s", String(int(_service->_internalError)).c_str(), _service->_internalError == 0);
+    tft.drawLine(0, 8*line_spacing+offset, MAX_WIDTH, 8*line_spacing+offset, TFT_BLACK);
     getNextButton()->drawButton();
     getPrevButton()->drawButton();
   }
@@ -141,11 +151,6 @@ DetailsScreen *detailedScreens[MAX_SERVICES] = {NULL};
 
 
 void load_from_server() {
-  tft.setCursor(MAX_WIDTH / 3 + 24, MAX_HEIGHT / 4, 2);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextFont(2);
-  tft.println("Loading ...");
-
   // fetch from server
   auto service1 = new Service("service 1", "1", "url1", 200, 8, 8, 8);
   detailedScreens[0] = new DetailsScreen(service1); 

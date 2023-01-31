@@ -115,24 +115,22 @@ class DetailsScreen {
     int line_spacing = 20;
     int offset = -2;
     tft.fillScreen(BACKGROUND_COLOR);
+    for (int i = 1; i<9; i++) {
+      tft.drawLine(0, i*line_spacing+offset, MAX_WIDTH, i*line_spacing+offset, TFT_BLACK);
+    }
     printNewLine(0, 0, "IP Address", WiFi.localIP().toString().c_str(), true);
-    tft.drawLine(0, line_spacing+offset, MAX_WIDTH, line_spacing+offset, TFT_BLACK);
     printNewLine(20, 0, "Name", _service->_name, true);
-    tft.drawLine(0, 2*line_spacing+offset, MAX_WIDTH, 2*line_spacing+offset, TFT_BLACK);
     printNewLine(40, 0, "ID", _service->_id, true);
-    tft.drawLine(0, 3*line_spacing+offset, MAX_WIDTH, 3*line_spacing+offset, TFT_BLACK);
     printNewLine(60, 0, "URL",  _service->_url, true);
-    tft.drawLine(0, 4*line_spacing+offset, MAX_WIDTH, 4*line_spacing+offset, TFT_BLACK);
     printNewLine(80, 0, "ReqPerMin", String(int(_service->_req_per_minute)).c_str(), true);
-    tft.drawLine(0, 5*line_spacing+offset, MAX_WIDTH, 5*line_spacing+offset, TFT_BLACK);
     printNewLine(100, 0, "200s", String(int(_service->_success)).c_str(), true);
-    tft.drawLine(0, 6*line_spacing+offset, MAX_WIDTH, 6*line_spacing+offset, TFT_BLACK);
     printNewLine(120, 0, "400s", String(int(_service->_userFail)).c_str(), _service->_userFail == 0);
-    tft.drawLine(0, 7*line_spacing+offset, MAX_WIDTH, 7*line_spacing+offset, TFT_BLACK);
     printNewLine(140, 0, "500s", String(int(_service->_internalError)).c_str(), _service->_internalError == 0);
-    tft.drawLine(0, 8*line_spacing+offset, MAX_WIDTH, 8*line_spacing+offset, TFT_BLACK);
     getNextButton()->drawButton();
     getPrevButton()->drawButton();
+  }
+  Service* getService(){
+    return _service;
   }
   TFT_eSPI_Button* getNextButton(){
     return _nextButton;
@@ -146,18 +144,49 @@ class DetailsScreen {
   TFT_eSPI_Button *_previousButton;
 };
 
+class MenuScreen {
+  public:
+  MenuScreen(DetailsScreen *detailedScreens){
+    this->_detailedScreens = detailedScreens;
+
+    for (int i = 0; i<sizeof(detailedScreens)-1; i++){
+      String service_name = this->_detailedScreens[i].getService()->_name;
+      char service_label[service_name.length() + 1];
+      service_name.toCharArray(service_label, service_name.length() + 1);
+
+      TFT_eSPI_Button* newButton =  new TFT_eSPI_Button(); 
+      newButton->initButtonUL(&tft, uint16_t(20*i), uint16_t(0), uint16_t(MAX_WIDTH),uint16_t(20), uint16_t(5), uint16_t(1), TFT_WHITE, service_label, 2);
+      this->_buttons[i]= newButton;
+    }
+  }
+  void displayMenu(){
+      for(int i = 0; i<sizeof(this->_buttons); i++){
+        _buttons[i]->drawButton();
+      }
+  }
+  private:
+  DetailsScreen *_detailedScreens;
+  TFT_eSPI_Button *_buttons[MAX_SERVICES];
+};
+
+TFT_eSPI_Button *buttons[MAX_SERVICES] = {NULL};
+Service *services[MAX_SERVICES] = {NULL};
 DetailsScreen *detailedScreens[MAX_SERVICES] = {NULL};
-
-
 
 void load_from_server() {
   // fetch from server
   auto service1 = new Service("service 1", "1", "url1", 200, 8, 8, 8);
-  detailedScreens[0] = new DetailsScreen(service1); 
   auto service2 = new Service("service 2", "2", "url2", 200, 8, 8, 8);
-  detailedScreens[1] = new DetailsScreen(service2);
   auto service3 = new Service("service 3", "3", "url3", 200, 8, 8, 8);
+
+  services[0] = service1;
+  services[1] = service2;
+  services[2] = service3;
+
+  detailedScreens[0] = new DetailsScreen(service1); 
+  detailedScreens[1] = new DetailsScreen(service2);
   detailedScreens[2] = new DetailsScreen(service3);
+
   delay(1000);
 }
 
@@ -181,11 +210,33 @@ void setup(void) {
   //  Connect to Wifi
   landingPage->connect_to_wifi();
 
+setup_t tft_settings={};
+tft.getSetup(tft_settings);
+
+      char buffer[50];
+    sprintf (buffer, "mosi: %d, miso: %d, clk: %d, cs: %d,",tft_settings.pin_tft_mosi,tft_settings.pin_tft_miso,tft_settings.pin_tft_clk,tft_settings.pin_tft_cs);
+
+      char buffer2[50];
+    sprintf (buffer2, "serial: %d, port: %d, dc: %d, rd: %d, wr: %d,",tft_settings.serial ,tft_settings.port,tft_settings.pin_tft_dc,tft_settings.pin_tft_rd,tft_settings.pin_tft_wr);
+
+      char buffer3[50];
+    sprintf (buffer3, "spi_freq: %d, rd_freq: %d",tft_settings.tft_spi_freq,tft_settings.tft_rd_freq);
+
+    Serial.println("buffer");
+    Serial.println(buffer);
+        Serial.println(buffer2);
+        Serial.println(buffer3);
+
   load_from_server();
   tft.fillScreen(BACKGROUND_COLOR);
 
-  currentScreen = detailedScreens[i];
-  currentScreen->printDetailScreen();
+/*
+  auto menu = MenuScreen(detailedScreens);
+  menu->displayMenu();
+  /*
+    currentScreen = detailedScreens[i];
+    currentScreen->printDetailScreen();
+  */
 }
 
 void loop() {
@@ -205,7 +256,7 @@ void loop() {
     }
 
     if(currentScreen->getPrevButton()->contains(uint16_t(x),uint16_t(y))
-        && detailedScreens[i-1] != NULL){
+        && detailedScreens[i-1] != NULL && i>0){
       i--;  
       sprintf (buffer, "previous button pressed: %d",i);
       Serial.println(buffer);

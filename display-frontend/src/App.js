@@ -2,7 +2,7 @@ import './App.css';
 
 import NavigationButtons from "./components/navigationButtons/navigationButtons";
 import WidgetCarousell from "./components/carousel/carousel"
-import Clock from './pages/Clock';
+import ClockPage from './pages/Clock';
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path='/' element={<Clock />} />
+        <Route path='/' element={<ClockPage />} />
         <Route path='/carousel' element={<WidgetCarousell />} />
       </Routes>
 

@@ -3,8 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 function buildLinks(linkList, currentPath) {
     let links = []
     for (const link of linkList) {
-        console.log("link ", link)
-        console.log("current ", currentPath)
         if (link.path === currentPath) {
             links.push(<Link class="btn btn-primary active" to={link.path} >{link.name}</Link>);
         } else {

@@ -4,6 +4,9 @@ import NavigationButtons from "./components/navigationButtons/navigationButtons"
 import WidgetCarousell from "./components/carousel/carousel"
 import ClockPage from './pages/Clock';
 import { Route, Routes } from 'react-router-dom';
+import VerticalGardenPage from './pages/VerticalGarden';
+
+import '@coreui/coreui/dist/css/coreui.min.css'
 
 function App() {
 
@@ -21,6 +24,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path='/' element={<ClockPage />} />
+        <Route path='/garden' element={<VerticalGardenPage/>} />
         <Route path='/carousel' element={<WidgetCarousell />} />
       </Routes>
 

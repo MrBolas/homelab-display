@@ -11,6 +11,7 @@ function ClockPage() {
                         style={{ fontSize: '500%' }}
                         timezone={'Europe/Lisbon'} />
                 </p>
+                Europe/Lisbon
             </h1>
             <NavigationButtons class="position-absolute top-100 start-50 translate-middle" />
         </div>

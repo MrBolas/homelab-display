@@ -18,7 +18,8 @@ function NavigationButtons() {
 
     const links = [
         {id:1, name: "Clock",path: "/",active: false},
-        {id:2, name: "Carousel",path: "/carousel",active: false}
+        {id:2, name: "Garden",path: "/garden",active: false},
+        {id:3, name: "Carousel",path: "/carousel",active: false}
     ]
 
     return (

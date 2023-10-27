@@ -8,15 +8,13 @@ function WaterLevel() {
   const fetchWaterLevel = async () => {
     const client = new GardenClient("http://localhost:8080");
     return client.hasWater()
-      .then(hasWater => {
-        if (hasWater) {
-          setWaterStatus("Has water");
+      .then(waterlevel => {
+        if (waterlevel.HasWater) {
+          setWaterStatus("Has Water");
         } else {
           setWaterStatus("Is Empty");
         }
       }).catch(error => {
-        console.log("Error");
-        console.log(error);
         setWaterStatus("Error");
       });
   };
@@ -35,8 +33,9 @@ function WaterLevel() {
     <div >
       <h1>Water Level</h1>
       <div class="position-absolute top-50 start-50 translate-middle">
-        {waterStatus === 'Has Water' ? (
-          <img src={fullImage} alt="Has Water" />
+        {console.log(waterStatus)}
+        {waterStatus === "Has Water" ? (
+          <img src={fullImage} alt="Has Water" width="500" height="500"/>
         ) : (
           <img src={emptyImage} alt="No Water" width="500" height="500" />
         )}

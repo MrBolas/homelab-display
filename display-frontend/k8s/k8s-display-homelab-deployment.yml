@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: display-homelab
+  labels:
+    app: display-homelab
+spec:
+  selector:
+    matchLabels:
+      app: display-homelab
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: display-homelab
+    spec:
+      containers:
+      - name: display-homelab
+        image: mrbolas/display-homelab:v0.4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: display-homelab-config

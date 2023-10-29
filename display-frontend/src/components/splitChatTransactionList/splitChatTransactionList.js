@@ -1,12 +1,32 @@
 import React, { useState,useEffect } from "react";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import SplitChatClient from "../../client/split-chat";
+import red from '@mui/material/colors/red';
+import { DataGrid } from '@mui/x-data-grid';
+
+const columns = [
+    { field: 'name', headerName: 'Name', width: 350 },
+    { field: 'group', headerName: 'Group', width: 130 },
+    { field: 'amount', headerName: 'Amount', width: 130 },
+    { field: 'description', headerName: 'Description', width: 600 },
+    { field: 'createdAt',headerName: 'Created At', width: 130 },
+  ];
+
+  const formatTransactions = (transactions) => {
+    let formattedTransactions = [];
+
+    for (const key in transactions) {
+        formattedTransactions.push({
+            id: key,
+            name: transactions[key].user.FirstName + " " + transactions[key].user.LastName,
+            group: transactions[key].group.GroupName,
+            amount: transactions[key].amount,
+            description: transactions[key].description,
+            createdAt: transactions[key].created_at
+        })
+    }
+
+    return formattedTransactions;
+  }
 
 function SplitChatTransactionList() {
     const [transactions, setTransactions] = useState([]);
@@ -14,8 +34,9 @@ function SplitChatTransactionList() {
     const client = new SplitChatClient("http://localhost:8080");
     return client.getTransactionList()
         .then(res => {
-            setTransactions(res.transactions);
-            console.log(res.transactions);
+            const formattedTransactions = formatTransactions(res.transactions);
+            setTransactions(formattedTransactions);
+            console.log(formattedTransactions);
         }).catch(error => {
             console.log(error);
         });
@@ -31,36 +52,14 @@ function SplitChatTransactionList() {
         };
       }, []);
 
-    return (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">User</TableCell>
-                <TableCell align="right">Group</TableCell>
-                <TableCell align="right">Ammount</TableCell>
-                <TableCell align="right">Description</TableCell>
-                <TableCell align="right">CreatedAt</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-        {transactions.map((transaction) => (
-          <TableRow
-            key={transaction.name}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell component="th" scope="row">
-            {transaction?.user.FirstName} {transaction?.user.LastName}
-            </TableCell>
-            <TableCell align="right">{transaction?.group.GroupName}</TableCell>
-            <TableCell align="right">{transaction?.amount}</TableCell>
-            <TableCell align="right">{transaction?.description}</TableCell>
-            <TableCell align="right">{transaction?.created_at}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-          </Table>
-        </TableContainer>
+      return (
+        <div style={{ height: '100%', width: '100%', accentColor: red }}>
+          <DataGrid
+            rows={transactions}
+            columns={columns}
+
+          />
+        </div>
       );
 }
 

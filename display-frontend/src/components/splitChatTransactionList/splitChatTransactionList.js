@@ -30,7 +30,7 @@ const columns = [
 function SplitChatTransactionList() {
     const [transactions, setTransactions] = useState([]);
     const fetchTransactions = async () => {
-    const client = new SplitChatClient("http://localhost:8080");
+    const client = new SplitChatClient("http://100.75.66.10:30500");
     return client.getTransactionList()
         .then(res => {
             const formattedTransactions = formatTransactions(res.transactions);

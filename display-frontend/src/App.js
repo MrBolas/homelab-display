@@ -5,6 +5,7 @@ import WidgetCarousell from "./components/carousel/carousel"
 import ClockPage from './pages/Clock';
 import { Route, Routes } from 'react-router-dom';
 import VerticalGardenPage from './pages/VerticalGarden';
+import SplitChatPage from './pages/SplitChatTransactionList';
 
 import '@coreui/coreui/dist/css/coreui.min.css'
 
@@ -26,6 +27,7 @@ function App() {
         <Route path='/' element={<ClockPage />} />
         <Route path='/garden' element={<VerticalGardenPage/>} />
         <Route path='/carousel' element={<WidgetCarousell />} />
+        <Route path='/split-chat' element={< SplitChatPage/>} />
       </Routes>
 
       <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@4.2.0/dist/js/coreui.bundle.min.js" integrity="sha384-n0qOYeB4ohUPebL1M9qb/hfYkTp4lvnZM6U6phkRofqsMzK29IdkBJPegsyfj/r4" crossorigin="anonymous"></script>

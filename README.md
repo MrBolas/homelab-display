@@ -1,9 +1,14 @@
 # display-frontend
 ## React front end
 
-### Run with Docker 
+### Build docker image
 ```bash
-docker build -p 80:3000 -t homelab-display
+docker build -t homelab-display .
+```
+
+### Run Docker Image
+```bash
+docker run -p 80:3000 -t homelab-display
 ``````
 
 # homelab-display

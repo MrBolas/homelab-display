@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from "react";
 import SplitChatClient from "../../client/split-chat";
-import red from '@mui/material/colors/red';
 import { DataGrid } from '@mui/x-data-grid';
 
 const columns = [
@@ -36,7 +35,6 @@ function SplitChatTransactionList() {
         .then(res => {
             const formattedTransactions = formatTransactions(res.transactions);
             setTransactions(formattedTransactions);
-            console.log(formattedTransactions);
         }).catch(error => {
             console.log(error);
         });
@@ -53,7 +51,7 @@ function SplitChatTransactionList() {
       }, []);
 
       return (
-        <div style={{ height: '100%', width: '100%', accentColor: red }}>
+        <div style={{ height: '95%', width: '100%', backgroundColor: 'white', borderRadius: '5px' }}>
           <DataGrid
             rows={transactions}
             columns={columns}
